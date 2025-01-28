@@ -1,0 +1,72 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block breadcrumb %}
+<li class="breadcrumb-item active">Home</li>
+{% endblock breadcrumb%}
+
+{% block content %}
+<div class="container-fluid">
+  <div id="ui-view" style="opacity: 1;"><div class="animated fadeIn">
+    <div class="row">
+    <div class="col-12">
+      <div class="card">
+      <div class="card-header">
+        <i class="fa fa-align-justify"></i> Main info
+      </div>
+      <div class="card-body">
+        {% if not user.is_authenticated %}
+        <div class="row justify-content-center">
+          <div class="col-md-6">
+            <div class="card p-4">
+              <div class="card-body">
+                <h1>Login</h1>
+                <p class="text-muted">Sign In to your account</p>
+                <form method="post" action="{% url 'core:login' %}">
+                  {% csrf_token %}
+                  {% if next %}
+                    <input type="hidden" name="next" value="{{ next }}">
+                  {% endif %}
+                  <div class="input-group mb-3">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-user"></i></span>
+                    </div>
+                    <input type="text" name="username" class="form-control" placeholder="Username" required>
+                  </div>
+                  <div class="input-group mb-4">
+                    <div class="input-group-prepend">
+                      <span class="input-group-text"><i class="fa fa-lock"></i></span>
+                    </div>
+                    <input type="password" name="password" class="form-control" placeholder="Password" required>
+                  </div>
+                  <div class="row">
+                    <div class="col-6">
+                      <button type="submit" class="btn btn-primary px-4">Login</button>
+                    </div>
+                    <div class="col-6 text-right">
+                      <a href="{% url 'register:new-company' %}" class="btn btn-link px-0">Register Company</a>
+                    </div>
+                  </div>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% else %}
+        <div class="jumbotron bg-white">
+          <h1 class="display-4">Welcome back!</h1>
+          <p class="lead">Welcome to the Project Manager System.</p>
+          <hr class="my-4">
+          <p class="lead">
+            <a class="btn btn-primary btn-lg" href="{% url 'projects:task_list' %}" role="button">Go to Tasks</a>
+          </p>
+        </div>
+        {% endif %}
+      </div>
+      </div>
+    </div>
+    </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

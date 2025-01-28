@@ -1,0 +1,64 @@
+{% extends 'core/base.html' %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h2>Tasks</h2>
+        <a href="{% url 'projects:create_task' %}" class="btn btn-primary">Create New Task</a>
+    </div>
+
+    {% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }}">
+            {{ message }}
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Task Name</th>
+                    <th>Project</th>
+                    <th>Assigned To</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for task in tasks %}
+                <tr>
+                    <td>{{ task.task_name }}</td>
+                    <td>{{ task.project.name }}</td>
+                    <td>
+                        {% for user in task.assign.all %}
+                        <span class="badge bg-secondary">{{ user.username }}</span>
+                        {% endfor %}
+                    </td>
+                    <td>
+                        {% if task.status == '1' %}
+                        <span class="badge bg-danger">Stuck</span>
+                        {% elif task.status == '2' %}
+                        <span class="badge bg-warning">Working</span>
+                        {% else %}
+                        <span class="badge bg-success">Done</span>
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a href="{% url 'projects:update_task' task.id %}" class="btn btn-sm btn-info">Edit</a>
+                        <a href="{% url 'projects:delete_task' task.id %}" class="btn btn-sm btn-danger">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No tasks available.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

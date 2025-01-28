@@ -1,0 +1,56 @@
+{% extends 'core/base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header">
+                    <h3>{% if task %}Edit Task{% else %}Create New Task{% endif %}</h3>
+                </div>
+                <div class="card-body">
+                    <form method="post">
+                        {% csrf_token %}
+                        <div class="form-group mb-3">
+                            <label for="task_name">Task Name</label>
+                            <input type="text" class="form-control" id="task_name" name="task_name" value="{{ task.task_name }}" required>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="project">Project</label>
+                            <select class="form-control" id="project" name="project" {% if task %}disabled{% endif %} required>
+                                {% for project in projects %}
+                                <option value="{{ project.id }}" {% if task.project.id == project.id %}selected{% endif %}>{{ project.name }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="assign">Assign To</label>
+                            <select class="form-control" id="assign" name="assign" multiple required>
+                                {% for user in users %}
+                                <option value="{{ user.id }}" {% if task and user in task.assign.all %}selected{% endif %}>{{ user.username }}</option>
+                                {% endfor %}
+                            </select>
+                            <small class="form-text text-muted">Hold Ctrl/Cmd to select multiple users</small>
+                        </div>
+                        <div class="form-group mb-3">
+                            <label for="status">Status</label>
+                            <select class="form-control" id="status" name="status" required>
+                                {% for value, label in status_choices %}
+                                <option value="{{ value }}" {% if task.status == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <button type="submit" class="btn btn-primary">
+                                {% if task %}Update Task{% else %}Create Task{% endif %}
+                            </button>
+                            <a href="{% url 'projects:task_list' %}" class="btn btn-secondary">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
